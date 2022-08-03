@@ -73,7 +73,7 @@ talkerValidations.validateTalkWatchedAt,
   (req, res) => {
     const { body } = req;
     const { id } = req.params;
-    const numberId = parseInt(id, Number);
+    const numberId = Number(id);
     const talkers = JSON.parse(fs.readFileSync(talkersData, 'utf-8'));
     let editTalker = talkers.find((talker) => talker.id === numberId);
     // filtar os palestrantes tirando o achado
