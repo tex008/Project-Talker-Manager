@@ -63,6 +63,33 @@ app.post('/talker',
   res.status(201).json(newTalker);
 });
 
+app.put('/talker/:id', 
+talkerValidations.validateToken,
+talkerValidations.validateTalkerName,
+talkerValidations.validateTalkerAge,
+talkerValidations.validateTalkerTalk,
+talkerValidations.validateTalkRate,
+talkerValidations.validateTalkWatchedAt,
+  (req, res) => {
+    const { body } = req;
+    const { id } = req.params;
+    const numberId = parseInt(id, Number);
+    const talkers = JSON.parse(fs.readFileSync(talkersData, 'utf-8'));
+    let editTalker = talkers.find((talker) => talker.id === numberId);
+    // filtar os palestrantes tirando o achado
+    const newTalkers = talkers.filter((talker) => talker !== editTalker);
+    editTalker = {
+      id: numberId,
+      ...body,
+    };
+    // inserir o novo palestrante no array
+    newTalkers.push(editTalker);
+    log('sem json', newTalkers);
+    log('com json', JSON.stringify(newTalkers));
+    fs.writeFileSync('talker.json', JSON.stringify(newTalkers));
+    res.status(HTTP_OK_STATUS).json(editTalker);
+});
+
 // não remova esse endpoint, e para o avaliador funcionar
 app.get('/', (_request, response) => {
   response.status(HTTP_OK_STATUS).send();
