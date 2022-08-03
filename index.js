@@ -90,6 +90,18 @@ talkerValidations.validateTalkWatchedAt,
     res.status(HTTP_OK_STATUS).json(editTalker);
 });
 
+app.delete('/talker/:id', 
+  talkerValidations.validateToken,
+  (req, res) => {
+  const { id } = req.params;
+  const numberId = Number(id);
+  const talkers = JSON.parse(fs.readFileSync(talkersData, 'utf-8'));
+  const newTalkers = talkers.find((talker) => talker.id !== numberId);
+  fs.writeFileSync('talker.json', JSON.stringify(newTalkers));
+  res.status(204).end();
+  res.send('olá');
+});
+
 // não remova esse endpoint, e para o avaliador funcionar
 app.get('/', (_request, response) => {
   response.status(HTTP_OK_STATUS).send();
