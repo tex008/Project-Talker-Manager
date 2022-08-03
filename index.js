@@ -1,5 +1,6 @@
 const express = require('express');
 const fs = require('fs').promises;
+const crypto = require('crypto');
 const bodyParser = require('body-parser');
 
 const app = express();
@@ -9,6 +10,10 @@ const HTTP_OK_STATUS = 200;
 const PORT = '3000';
 const { log } = console;
 const talkersData = 'talker.json';
+
+function generateRandomToken() {
+  return crypto.randomBytes(8).toString('hex');
+}
 
 app.get('/talker', async (req, res) => {
   try {
@@ -40,11 +45,16 @@ app.get('/talker/:id', async (req, res) => {
   }
 });
 
+app.post('/login', (req, res) => {
+  const newToken = generateRandomToken();
+  res.status(HTTP_OK_STATUS).json({ token: `${newToken}` });
+});
+
 // não remova esse endpoint, e para o avaliador funcionar
 app.get('/', (_request, response) => {
   response.status(HTTP_OK_STATUS).send();
 });
-
+ 
 app.listen(PORT, () => {
   console.log('Server Online');
 });
