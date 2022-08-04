@@ -13,6 +13,21 @@ const PORT = '3000';
 const { log } = console;
 const talkersData = 'talker.json';
 
+app.get('/talker/search', 
+talkerValidations.validateToken,
+  (req, res) => {
+  const { q } = req.query;
+  console.log(q);  
+  const talkers = JSON.parse(fs.readFileSync(talkersData, 'utf-8'));
+  const filtredTalkers = talkers.filter((talker) => talker.name.includes(q));
+  console.log(filtredTalkers);
+  if (!q || q === '') {
+    return res.status(HTTP_OK_STATUS).json(talkers);
+  }
+  if (filtredTalkers.length < 1) return res.status(200).json('[]');
+  return res.status(HTTP_OK_STATUS).json(filtredTalkers);
+});
+
 app.get('/talker', (req, res) => {
   const talkers = JSON.parse(fs.readFileSync(talkersData, 'utf-8'));
   return res.status(HTTP_OK_STATUS).json(talkers);
